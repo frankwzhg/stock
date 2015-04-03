@@ -12,12 +12,12 @@ from time import strftime, gmtime
 """
 get top ten stock for each fund
 """
-# import fund_data_all dataframe
-sel_date = strftime("%Y-%m-%d", gmtime())
-# sel_date = '2015-02-11'
-fund_data = op_db.read("select * from test.fund_data where get_date =" + "'" + sel_date + "'")
-# fund_uncreative_data = fund_data[fund_data["F_code"].str.contains("150") == False]
-# get top stock and net information for each fund
+# # import fund_data_all dataframe
+# sel_date = strftime("%Y-%m-%d", gmtime())
+# # sel_date = '2015-02-11'
+# fund_data = op_db.read("select * from test.fund_data where get_date =" + "'" + sel_date + "'")
+# # fund_uncreative_data = fund_data[fund_data["F_code"].str.contains("150") == False]
+# # get top stock and net information for each fund
 
 
 def get_top_stock_each_fund(fund_code):
@@ -39,26 +39,34 @@ def get_top_stock_each_fund(fund_code):
         top_stock["F_code"] = fund_code
     except:
         pass
+    # print top_stock
     return top_stock
 
 
 # get top_stock and fund_net_company for each fund
 
 def get_stock_net(fund_code_list):
+    # print fund_code_list
     top_stock_allf_local = pd.DataFrame()
-    for fund_code in fund_code_list:
+    for fund_code in fund_code_list.code:
+        # print len(fund_code)
         stock = get_top_stock_each_fund(fund_code)
         top_stock_allf_local = top_stock_allf_local.append(stock)
     return top_stock_allf_local
 
-# fund_net_company_allF = fund_net_company_allF.append(fund_net)
-
-# get top stock and net information for each fund, and then save top_stock and fund_net_company into database
-
+# get fund data, and then split fund code
+def get_fund_top_stocks(fund_name):
+    sel_date = strftime("%Y-%m-%d", gmtime())
+    fund_code = op_db.read("select code from test." + fund_name + "_FD where get_date =" + "'" + sel_date + "'")
+    fund_stock_code = op_db.read("select code from test." + fund_name + "_SK where get_date=" + "'" + sel_date + "'")
+    fund_code = fund_code[fund_code['code'].isin(fund_stock_code.code)]
+    top_stock = get_stock_net(fund_code)
+    top_stock['get_date'] = sel_date
+    return top_stock
 if __name__ == "__main__":
-    # top_stock_allF = get_stock_net(['169101', '510510'])
-    top_stock_allF = get_stock_net(fund_data.F_code)
-    top_stock_allF['get_date'] = strftime("%Y-%m-%d", gmtime())
-    # fund_net_company_allF.fillna(inplace = True, value = 0)
-    op_db.save(top_stock_allF, "top_stock")
+    for fund in ["fund_Close", "fund_ETF", "fund_LOF", "fund_creative"]:
+        stocks = get_fund_top_stocks(fund)
+        # print stocks
+        op_db.save(stocks, fund + '_top_stocks')
+    # print get_fund_top_stocks("fund_Close")
     # print top_stock_allF
