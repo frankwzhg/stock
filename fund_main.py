@@ -2,7 +2,8 @@
 
 import os
 import op_database as op_db
-from time import strftime, gmtime, sleep
+from time import strftime, gmtime, sleep, localtime
+import datetime
 
 # load data for each module
 
@@ -33,3 +34,5 @@ if __name__ == "__main__":
     run_module('/home/frank/stock/fund_information.py', ['fund_Close_FD_info', 'fund_ETF_FD_info', 'fund_LOF_FD_info', 'fund_creative_FD_info'])
     run_module('/home/frank/stock/fund_cal_rate.py',['fund_Close_rate', 'fund_ETF_rate', 'fund_LOF_rate', 'fund_creative_rate'])
     run_module('/home/frank/stock/fund_data_recal.py', ['fund_Close_cal', 'fund_ETF_cal', 'fund_LOF_cal', 'fund_creative_cal'])
+    # d = localtime()
+    # print strftime("%A", d)

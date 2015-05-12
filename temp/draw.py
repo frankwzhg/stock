@@ -1,17 +1,63 @@
-# -*- coding: utf-8 -*-
-import matplotlib.pyplot as plt
-fig = plt.figure()
-fig.suptitle('bold figure suptitle', fontsize=14, fontweight='bold')
-ax = fig.add_subplot(111)
-fig.subplots_adjust(top=0.85)
-ax.set_title('axes title')
-ax.set_xlabel('xlabel')
-ax.set_ylabel('ylabel')
-ax.text(3, 8, 'boxed italics text in data coords', style='italic', bbox={'facecolor':'red', 'alpha':0.5, 'pad':10})
-ax.text(2, 6, r'an equation: $E=mc^2$', fontsize=15)
-ax.text(3, 2, unicode('unicode: Institut f\374r Festk\366rperphysik', 'latin-1'))
-ax.text(0.95, 0.01, 'colored text in axes coords', verticalalignment='bottom', horizontalalignment='right', transform=ax.transAxes, color='green', fontsize=15)
-ax.plot([2], [1], 'o')
-ax.annotate('annotate', xy=(2, 1), xytext=(3, 4), arrowprops=dict(facecolor='black', shrink=0.05))
-ax.axis([0, 10, 0, 10])
-plt.show()
+from PyQt4 import QtGui, QtCore, Qt
+import time
+import math
+
+class FenixGui(QtGui.QWidget):
+
+    def backgroundmousepressevent(self, event):
+        print "test 1"
+        self.offset = event.pos()
+
+
+    def backgroundmousemoveevent(self, event):
+        print "test 2"
+        x=event.globalX()
+        y=event.globalY()
+        x_w = self.offset.x()
+        y_w = self.offset.y()
+        self.move(x-x_w, y-y_w)
+
+
+    def __init__(self):
+        super(FenixGui, self).__init__()
+
+        # setting layout type
+        hboxlayout = QtGui.QHBoxLayout(self)
+        self.setLayout(hboxlayout)
+
+        # hiding title bar
+        self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
+
+        # setting window size and position
+        self.setGeometry(200, 200, 862, 560)
+        self.setAttribute(Qt.Qt.WA_TranslucentBackground)
+        self.setAutoFillBackground(False)
+
+        # creating background window label
+        backgroundpixmap = QtGui.QPixmap("fenixbackground.png")
+        self.background = QtGui.QLabel(self)
+        self.background.setPixmap(backgroundpixmap)
+        self.background.setGeometry(0, 0, 862, 560)
+
+        # making window draggable by the window label
+        self.connect(self.background,QtCore.SIGNAL("mousePressEvent()"),         self.backgroundmousepressevent)
+        self.connect(self.background,QtCore.SIGNAL("mouseMoveEvent()"), self.backgroundmousemoveevent)
+
+
+        # fenix logo
+        logopixmap = QtGui.QPixmap("fenixlogo.png")
+        self.logo = QtGui.QLabel(self)
+        self.logo.setPixmap(logopixmap)
+        self.logo.setGeometry(100, 100, 400, 150)
+
+
+def main():
+
+    app = QtGui.QApplication([])
+    exm = FenixGui()
+    exm.show()
+    app.exec_()
+
+
+if __name__ == '__main__':
+    main()

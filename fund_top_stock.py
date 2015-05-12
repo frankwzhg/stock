@@ -58,7 +58,9 @@ def get_stock_net(fund_code_list):
 def get_fund_top_stocks(fund_name):
     sel_date = strftime("%Y-%m-%d", gmtime())
     fund_code = op_db.read("select code from test." + fund_name + "_FD where get_date =" + "'" + sel_date + "'")
+    # print 'fund_code ' + fund_code
     fund_stock_code = op_db.read("select code from test." + fund_name + "_SK where get_date=" + "'" + sel_date + "'")
+    # print 'fund_stock_code ' + fund_stock_code
     fund_code = fund_code[fund_code['code'].isin(fund_stock_code.code)]
     top_stock = get_stock_net(fund_code)
     top_stock['get_date'] = sel_date

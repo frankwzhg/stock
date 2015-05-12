@@ -11,7 +11,8 @@ import numpy as np
 # calculate fund total vaule(基金当前总市值）, 计算方式是用基金中的top ten股票的每只股票当前市值除以基金净值比的平均值
 def cal_total_value(fund_name):
     fund = op_db.read("select * from test." + fund_name + "_top_stocks where get_date = " + "'" + strftime("%Y-%m-%d", gmtime()) + "'")
-    # fund = op_db.read("select * from test." + fund_name + "_top_stocks where get_date = '2015-04-07'")
+    # print "select * from test." + fund_name + "_top_stocks where get_date = " + "'" + strftime("%Y-%m-%d", gmtime()) + "'"
+    # # fund = op_db.read("select * from test." + fund_name + "_top_stocks where get_date = '2015-04-07'")
     # print fund
     fund["keep_cur"] = fund.keep_cur.map(lambda x: x.replace(',', ''))
     fund["keep_stock_amount"] = fund.keep_stock_amount.map(lambda x: x.replace(',', ''))
@@ -25,6 +26,7 @@ def cal_total_value(fund_name):
         # print fund_cal
         fund_cal = fund_cal.append(fund_temp)
     fund_cal = fund_cal.rename(columns = {"F_code":"code"})
+    print fund_cal
     return fund_cal
 #
 if __name__ == "__main__":
