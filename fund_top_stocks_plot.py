@@ -191,8 +191,8 @@ class GUIForm(QtGui.QMainWindow):
         self.text.remove()
         self.ui.widget.canvas.draw()
 
-    def doubleclick(event):
-        
+    # def doubleclick(event):
+
 
 
 
