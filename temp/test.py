@@ -1,30 +1,34 @@
-from PyQt4 import QtGui, QtCore
+import numpy as np
+import matplotlib.pyplot as plt
 
-class Window(QtGui.QMainWindow):
-    def __init__(self):
-        QtGui.QMainWindow.__init__(self)
-        widget = QtGui.QWidget(self)
-        layout = QtGui.QVBoxLayout(widget)
-        self.edit = QtGui.QLineEdit(self)
-        self.list = QtGui.QListWidget(self)
-        layout.addWidget(self.edit)
-        layout.addWidget(self.list)
-        self.setCentralWidget(widget)
+X = np.random.rand(100, 1000)
+xs = np.mean(X, axis=1)
+ys = np.std(X, axis=1)
 
-    def eventFilter(self, source, event):
-        if event.type() == QtCore.QEvent.MouseMove:
-            if event.buttons() == QtCore.Qt.NoButton:
-                pos = event.pos()
-                self.edit.setText('x: %d, y: %d' % (pos.x(), pos.y()))
-            else:
-                pass # do other stuff
-        return QtGui.QMainWindow.eventFilter(self, source, event)
+fig = plt.figure()
+ax = fig.add_subplot(111)
+ax.set_title('click on point to plot time series')
+line, = ax.plot(xs, ys, 'o', picker=5)  # 5 points tolerance
 
-if __name__ == '__main__':
 
-    import sys
-    app = QtGui.QApplication(sys.argv)
-    win = Window()
-    win.show()
-    app.installEventFilter(win)
-    sys.exit(app.exec_())
+def onpick(event):
+
+    if event.artist!=line: return True
+
+    N = len(event.ind)
+    if not N: return True
+
+
+    figi = plt.figure()
+    for subplotnum, dataind in enumerate(event.ind):
+        ax = figi.add_subplot(N,1,subplotnum+1)
+        ax.plot(X[dataind])
+        ax.text(0.05, 0.9, 'mu=%1.3f\nsigma=%1.3f'%(xs[dataind], ys[dataind]),
+                transform=ax.transAxes, va='top')
+        ax.set_ylim(-0.5, 1.5)
+    figi.show()
+    return True
+
+fig.canvas.mpl_connect('pick_event', onpick)
+
+plt.show()

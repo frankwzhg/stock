@@ -66,7 +66,7 @@ class Ui_MainWindow(object):
         self.fund_date = QtGui.QDateEdit(self.centralwidget)
         self.fund_date.setCalendarPopup(True)
         self.fund_date.setObjectName(_fromUtf8("fund_date"))
-        self.fund_date.setDate(QtCore.QDate.addDays(QtCore.QDate.currentDate(), -3))
+        self.fund_date.setDate(QtCore.QDate.addDays(QtCore.QDate.currentDate(), -1))
         self.gridLayout.addWidget(self.fund_date, 2, 1, 1, 2)
         self.label_3 = QtGui.QLabel(self.centralwidget)
         self.label_3.setObjectName(_fromUtf8("label_3"))

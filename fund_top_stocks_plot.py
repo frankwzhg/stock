@@ -96,7 +96,9 @@ class GUIForm(QtGui.QMainWindow):
         QtCore.QObject.connect(self.ui.fund_date, QtCore.SIGNAL('dateChanged(QDate)'), self.update_fund_date)
         QtCore.QObject.connect(self.ui.fund_date, QtCore.SIGNAL('dateChanged(QDate)'), self.top_stock_table)
         QtCore.QObject.connect(self.ui.fund_date, QtCore.SIGNAL('dateChanged(QDate)'), self.draw_today_Pnet)
-        self.ui.widget.canvas.mpl_connect('button_press_event', self.mousePressEvent)
+        # self.ui.widget.canvas.mpl_connect('pick_event', self.on_pick)
+        self.ui.widget.canvas.mpl_connect('pick_event', self.on_pick)
+        self.ui.widget.canvas.mpl_connect('button_release_event', self.offclick)
 
     # update window data value when fund_cat changed
 
@@ -141,7 +143,7 @@ class GUIForm(QtGui.QMainWindow):
 
     def draw_today_Pnet(self):
         input_day = self.ui.fund_date.date()
-        start_day = QtCore.QDate.addDays(input_day, -5).toPyDate()
+        start_day = QtCore.QDate.addDays(input_day, -3).toPyDate()
         end_day = input_day.toPyDate()
         # print end_day, start_day
         table_name = self.table_name()
@@ -156,19 +158,42 @@ class GUIForm(QtGui.QMainWindow):
 
         self.ui.widget.canvas.period_percent_rate.clear()
         self.ui.widget.canvas.period_percent_rate.xaxis.set_major_locator(MultipleLocator(10))
-        self.ui.widget.canvas.period_percent_rate.bar(draw_data.index, draw_data.percent_net, bar_width, color = 'b')
-        self.ui.widget.canvas.period_percent_rate.bar(draw_data.index+bar_width, draw_data.percent_net_now, bar_width, color = 'y')
+        self.ui.widget.canvas.period_percent_rate.bar(draw_data.index, draw_data.percent_net, bar_width, color = 'b', picker = 5)
+        # self.ui.widget.canvas.period_percent_rate.plot(draw_data.percent_net)
+        self.ui.widget.canvas.period_percent_rate.bar(draw_data.index+bar_width, draw_data.percent_net_now, bar_width, color = 'y', picker = 5)
+        # self.ui.widget.canvas.period_percent_rate.plot(draw_data.percent_net_now)
         self.ui.widget.canvas.period_percent_rate.xaxis.grid(True, which='major')
         self.ui.widget.canvas.period_percent_rate.set_ylim(0, max(draw_data.percent_net_now)+max(draw_data.percent_net_now) * 0.2)
         self.ui.widget.canvas.period_percent_rate.set_xticklabels(['0'] + ['0'] + list(x))
+        # self.text = self.ui.widget.canvas.period_percent_rate.text(1, 3, "this is initial")
         self.ui.widget.canvas.draw()
+        # print draw_data
         # self.mousePressEvent(self, ui.widget.canvas.period_percent_rate)
         # return end_day
         # self.ui.widget.canvas.today_percent_rate.bar()
+        return draw_data
 
     # define mouse clicks events
-    def mousePressEvent(self, QMouseEvent):
-        print QMouseEvent
+    def on_pick(self, event):
+        ChineseFont1 = FontProperties(fname = '/usr/share/fonts/truetype/wqy/wqy-microhei.ttc')
+        artist = event.artist
+        x = artist.get_bbox().x0
+        y = artist.get_bbox().y1
+        my_data = self.draw_today_Pnet()
+        stock_code = my_data[my_data.index == int(x)]['stock_code']
+        stock_code = stock_code.ix[int(x), 0]
+        self.text = self.ui.widget.canvas.period_percent_rate.text(x, y, u'股票代码: %s' % stock_code, fontproperties = ChineseFont1)
+        # self.text.set_text("")
+        self.ui.widget.canvas.draw()
+        # return (x, y)
+    def offclick(self, event):
+
+        self.text.remove()
+        self.ui.widget.canvas.draw()
+
+    def doubleclick(event):
+        
+
 
 
 def main():

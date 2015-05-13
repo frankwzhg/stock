@@ -2,14 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1890f002-6a15-4592-8298-8be31baa1bee" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/matplotlibwidget.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/rate_plot.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data_draw.py" afterPath="$PROJECT_DIR$/data_draw.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/dbnavigator.xml" afterPath="$PROJECT_DIR$/.idea/dbnavigator.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/temp/draw.py" afterPath="$PROJECT_DIR$/temp/draw.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fund_data_recal.py" afterPath="$PROJECT_DIR$/fund_data_recal.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fund_main.py" afterPath="$PROJECT_DIR$/fund_main.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fund_top_stock.py" afterPath="$PROJECT_DIR$/fund_top_stock.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fund_top_stocks_plot.py" afterPath="$PROJECT_DIR$/fund_top_stocks_plot.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/temp/test.py" afterPath="$PROJECT_DIR$/temp/test.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/top_stocksUI.py" afterPath="$PROJECT_DIR$/top_stocksUI.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="stock.iws" />
@@ -59,8 +54,8 @@
       <file leaf-file-name="rate_plot.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/rate_plot.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="1449" max-vertical-offset="2289">
-              <caret line="47" column="26" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="15" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="1239" max-vertical-offset="2289">
+              <caret line="81" column="94" selection-start-line="81" selection-start-column="65" selection-end-line="81" selection-end-column="94" />
               <folding>
                 <element signature="e#45#55#0" expanded="true" />
               </folding>
@@ -81,8 +76,8 @@
       <file leaf-file-name="top_stocksUI.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/top_stocksUI.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="1422" max-vertical-offset="2415">
-              <caret line="28" column="29" selection-start-line="28" selection-start-column="29" selection-end-line="28" selection-end-column="29" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="1359" max-vertical-offset="2415">
+              <caret line="68" column="82" selection-start-line="68" selection-start-column="82" selection-end-line="68" selection-end-column="82" />
               <folding />
             </state>
           </provider>
@@ -91,8 +86,8 @@
       <file leaf-file-name="fund_top_stocks_plot.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/fund_top_stocks_plot.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.44833624" vertical-offset="3440" max-vertical-offset="4011">
-              <caret line="172" column="0" selection-start-line="172" selection-start-column="0" selection-end-line="172" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.7057793" vertical-offset="3797" max-vertical-offset="4578">
+              <caret line="194" column="8" selection-start-line="194" selection-start-column="8" selection-end-line="194" selection-end-column="8" />
               <folding>
                 <element signature="e#43#53#0" expanded="true" />
               </folding>
@@ -115,9 +110,11 @@
       <file leaf-file-name="test.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/temp/test.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="57" max-vertical-offset="735">
-              <caret line="17" column="33" selection-start-line="17" selection-start-column="33" selection-end-line="17" selection-end-column="33" />
-              <folding />
+            <state vertical-scroll-proportion="0.0" vertical-offset="204" max-vertical-offset="819">
+              <caret line="18" column="25" selection-start-line="18" selection-start-column="25" selection-end-line="18" selection-end-column="25" />
+              <folding>
+                <element signature="e#0#18#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -147,14 +144,14 @@
         <option value="$PROJECT_DIR$/temp/test2.py" />
         <option value="$PROJECT_DIR$/rate_plotUI1.py" />
         <option value="$PROJECT_DIR$/rate_plotUI.py" />
-        <option value="$PROJECT_DIR$/rate_plot.py" />
         <option value="$PROJECT_DIR$/fund_data_recal.py" />
         <option value="$PROJECT_DIR$/matplotlibwidget.py" />
         <option value="$PROJECT_DIR$/top_stock_mat.py" />
-        <option value="$PROJECT_DIR$/top_stocksUI.py" />
         <option value="$PROJECT_DIR$/temp/test1.py" />
-        <option value="$PROJECT_DIR$/temp/test.py" />
         <option value="$PROJECT_DIR$/temp/draw.py" />
+        <option value="$PROJECT_DIR$/top_stocksUI.py" />
+        <option value="$PROJECT_DIR$/temp/test.py" />
+        <option value="$PROJECT_DIR$/rate_plot.py" />
         <option value="$PROJECT_DIR$/fund_top_stocks_plot.py" />
       </list>
     </option>
@@ -265,30 +262,6 @@
       <ConfigurationWrapper RunnerId="PythonRunner" />
       <method />
     </configuration>
-    <configuration default="false" name="Unittests in test (2)" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/temp" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="stock" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/temp/test1.py" />
-      <option name="CLASS_NAME" value="test" />
-      <option name="METHOD_NAME" value="" />
-      <option name="FOLDER_NAME" value="" />
-      <option name="TEST_TYPE" value="TEST_CLASS" />
-      <option name="PATTERN" value="" />
-      <option name="USE_PATTERN" value="false" />
-      <option name="PUREUNITTEST" value="true" />
-      <option name="PARAMS" value="" />
-      <option name="USE_PARAM" value="false" />
-      <RunnerSettings RunnerId="PythonRunner" />
-      <ConfigurationWrapper RunnerId="PythonRunner" />
-      <method />
-    </configuration>
     <configuration default="false" name="Unittests in test (3)" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -345,6 +318,25 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="stock" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/temp/draw.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <RunnerSettings RunnerId="PythonRunner" />
+      <ConfigurationWrapper RunnerId="PythonRunner" />
+      <method />
+    </configuration>
+    <configuration default="false" name="rate_plot" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="stock" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/rate_plot.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <RunnerSettings RunnerId="PythonRunner" />
@@ -475,18 +467,18 @@
     </configuration>
     <list size="5">
       <item index="0" class="java.lang.String" itemvalue="Python.fund_top_stocks_plot" />
-      <item index="1" class="java.lang.String" itemvalue="Python tests.Unittests in test (2)" />
-      <item index="2" class="java.lang.String" itemvalue="Python tests.Unittests in test (3)" />
-      <item index="3" class="java.lang.String" itemvalue="Python.test" />
-      <item index="4" class="java.lang.String" itemvalue="Python.draw" />
+      <item index="1" class="java.lang.String" itemvalue="Python tests.Unittests in test (3)" />
+      <item index="2" class="java.lang.String" itemvalue="Python.test" />
+      <item index="3" class="java.lang.String" itemvalue="Python.draw" />
+      <item index="4" class="java.lang.String" itemvalue="Python.rate_plot" />
     </list>
     <recent_temporary>
       <list size="5">
         <item index="0" class="java.lang.String" itemvalue="Python.fund_top_stocks_plot" />
-        <item index="1" class="java.lang.String" itemvalue="Python.draw" />
+        <item index="1" class="java.lang.String" itemvalue="Python.rate_plot" />
         <item index="2" class="java.lang.String" itemvalue="Python.test" />
-        <item index="3" class="java.lang.String" itemvalue="Python tests.Unittests in test (3)" />
-        <item index="4" class="java.lang.String" itemvalue="Python tests.Unittests in test (2)" />
+        <item index="3" class="java.lang.String" itemvalue="Python.draw" />
+        <item index="4" class="java.lang.String" itemvalue="Python tests.Unittests in test (3)" />
       </list>
     </recent_temporary>
   </component>
@@ -519,7 +511,7 @@
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32916668" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="DB Browser" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32969433" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.328125" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.328125" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="DB Execution Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -888,16 +880,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/rate_plot.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="1449" max-vertical-offset="2289">
-          <caret line="47" column="26" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="15" />
-          <folding>
-            <element signature="e#45#55#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/temp/test1.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.7512195" vertical-offset="0" max-vertical-offset="861">
@@ -908,18 +890,30 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/top_stocksUI.py">
+    <entry file="file://$PROJECT_DIR$/temp/draw.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="141" max-vertical-offset="2415">
-          <caret line="28" column="29" selection-start-line="28" selection-start-column="29" selection-end-line="28" selection-end-column="29" />
-          <folding />
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1428">
+          <caret line="51" column="0" selection-start-line="51" selection-start-column="0" selection-end-line="51" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#35#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/rate_plotUI.py">
+    <entry file="file://$PROJECT_DIR$/temp/test.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="687" max-vertical-offset="2184">
-          <caret line="48" column="87" selection-start-line="48" selection-start-column="8" selection-end-line="48" selection-end-column="87" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="204" max-vertical-offset="819">
+          <caret line="18" column="25" selection-start-line="18" selection-start-column="25" selection-end-line="18" selection-end-column="25" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/top_stocksUI.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="1359" max-vertical-offset="2415">
+          <caret line="68" column="82" selection-start-line="68" selection-start-column="82" selection-end-line="68" selection-end-column="82" />
           <folding />
         </state>
       </provider>
@@ -934,28 +928,28 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/temp/test.py">
+    <entry file="file://$PROJECT_DIR$/rate_plotUI.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="57" max-vertical-offset="735">
-          <caret line="17" column="33" selection-start-line="17" selection-start-column="33" selection-end-line="17" selection-end-column="33" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="687" max-vertical-offset="2184">
+          <caret line="48" column="87" selection-start-line="48" selection-start-column="8" selection-end-line="48" selection-end-column="87" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/temp/draw.py">
+    <entry file="file://$PROJECT_DIR$/rate_plot.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1428">
-          <caret line="51" column="0" selection-start-line="51" selection-start-column="0" selection-end-line="51" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="1239" max-vertical-offset="2289">
+          <caret line="81" column="94" selection-start-line="81" selection-start-column="65" selection-end-line="81" selection-end-column="94" />
           <folding>
-            <element signature="e#0#35#0" expanded="true" />
+            <element signature="e#45#55#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/fund_top_stocks_plot.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.44833624" vertical-offset="3440" max-vertical-offset="4011">
-          <caret line="172" column="0" selection-start-line="172" selection-start-column="0" selection-end-line="172" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.7057793" vertical-offset="3797" max-vertical-offset="4578">
+          <caret line="194" column="8" selection-start-line="194" selection-start-column="8" selection-end-line="194" selection-end-column="8" />
           <folding>
             <element signature="e#43#53#0" expanded="true" />
           </folding>
