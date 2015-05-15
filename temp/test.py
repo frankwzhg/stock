@@ -1,34 +1,45 @@
-import numpy as np
 import matplotlib.pyplot as plt
 
-X = np.random.rand(100, 1000)
-xs = np.mean(X, axis=1)
-ys = np.std(X, axis=1)
-
 fig = plt.figure()
-ax = fig.add_subplot(111)
-ax.set_title('click on point to plot time series')
-line, = ax.plot(xs, ys, 'o', picker=5)  # 5 points tolerance
+ax = plt.axes()
 
 
-def onpick(event):
+points_with_annotation = []
+for i in range(10):
+    point, = plt.plot(i, i, 'o', markersize=10)
 
-    if event.artist!=line: return True
+    annotation = ax.annotate("Mouseover point %s" % i,
+        xy=(i, i), xycoords='data',
+        xytext=(i + 1, i), textcoords='data',
+        horizontalalignment="left",
+        arrowprops=dict(arrowstyle="simple",
+                        connectionstyle="arc3,rad=-0.2"),
+        bbox=dict(boxstyle="round", facecolor="w",
+                  edgecolor="0.5", alpha=0.9)
+        )
+    # by default, disable the annotation visibility
+    annotation.set_visible(False)
 
-    N = len(event.ind)
-    if not N: return True
+    points_with_annotation.append([point, annotation])
+# print points_with_annotation
 
 
-    figi = plt.figure()
-    for subplotnum, dataind in enumerate(event.ind):
-        ax = figi.add_subplot(N,1,subplotnum+1)
-        ax.plot(X[dataind])
-        ax.text(0.05, 0.9, 'mu=%1.3f\nsigma=%1.3f'%(xs[dataind], ys[dataind]),
-                transform=ax.transAxes, va='top')
-        ax.set_ylim(-0.5, 1.5)
-    figi.show()
-    return True
+def on_move(event):
 
-fig.canvas.mpl_connect('pick_event', onpick)
+    visibility_changed = False
+    for point, annotation in points_with_annotation:
+
+        should_be_visible = (point.contains(event)[0] == True)
+        print should_be_visible
+
+        if should_be_visible != annotation.get_visible():
+            visibility_changed = True
+            annotation.set_visible(should_be_visible)
+
+    if visibility_changed:
+        plt.draw()
+
+fig.canvas.mpl_connect('motion_notify_event', on_move)
+# print on_move_id
 
 plt.show()

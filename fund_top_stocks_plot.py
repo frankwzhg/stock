@@ -18,6 +18,7 @@ class GUIForm(QtGui.QMainWindow):
     def __init__(self, parent=None):
 
         QtGui.QDialog.__init__(self, parent)
+        self.ChineseFont1 = FontProperties(fname = '/usr/share/fonts/truetype/wqy/wqy-microhei.ttc')
         # self.fund_rate = self.fund_rate()
         # self.fund_data = self.fund_data()
         self.ui = Ui_MainWindow()
@@ -96,9 +97,13 @@ class GUIForm(QtGui.QMainWindow):
         QtCore.QObject.connect(self.ui.fund_date, QtCore.SIGNAL('dateChanged(QDate)'), self.update_fund_date)
         QtCore.QObject.connect(self.ui.fund_date, QtCore.SIGNAL('dateChanged(QDate)'), self.top_stock_table)
         QtCore.QObject.connect(self.ui.fund_date, QtCore.SIGNAL('dateChanged(QDate)'), self.draw_today_Pnet)
+        self.ui.widget.canvas.mpl_connect('motion_notify_event', self.move_on)
+        # self.ui.widget.canvas.setMouseTracking(True)
+        # self.ui.widget.canvas.installEventFilter(self)
+
         # self.ui.widget.canvas.mpl_connect('pick_event', self.on_pick)
-        self.ui.widget.canvas.mpl_connect('pick_event', self.on_pick)
-        self.ui.widget.canvas.mpl_connect('button_release_event', self.offclick)
+        # self.ui.widget.canvas.mpl_connect('pick_event', self.on_pick)
+        # self.ui.widget.canvas.mpl_connect('button_release_event', self.offclick)
 
     # update window data value when fund_cat changed
 
@@ -157,41 +162,79 @@ class GUIForm(QtGui.QMainWindow):
         bar_width = 0.35
 
         self.ui.widget.canvas.period_percent_rate.clear()
+        self.ui.widget.canvas.period_percent_rate.set_title(u'十大股票基金中比率变化图', fontproperties = self.ChineseFont1)
         self.ui.widget.canvas.period_percent_rate.xaxis.set_major_locator(MultipleLocator(10))
-        self.ui.widget.canvas.period_percent_rate.bar(draw_data.index, draw_data.percent_net, bar_width, color = 'b', picker = 5)
-        # self.ui.widget.canvas.period_percent_rate.plot(draw_data.percent_net)
-        self.ui.widget.canvas.period_percent_rate.bar(draw_data.index+bar_width, draw_data.percent_net_now, bar_width, color = 'y', picker = 5)
-        # self.ui.widget.canvas.period_percent_rate.plot(draw_data.percent_net_now)
+        self.points_with_annotation = []
+        for i in draw_data.index:
+            # point_com, = self.ui.widget.canvas.period_percent_rate.plot(draw_data.index, draw_data.percent_net, 'ro', markersize=10)
+            bar_com = self.ui.widget.canvas.period_percent_rate.bar(draw_data.index, draw_data.percent_net, bar_width, color = 'b', picker = 5)
+            print bar_com
+            annotation = self.ui.widget.canvas.period_percent_rate.annotate("this is a test", xy=(draw_data.index[i], draw_data.percent_net[i]), xytext=(draw_data.index[i]+0.5, draw_data.percent_net[i]))
+            annotation.set_visible(False)
+            self.points_with_annotation.append([bar_com, annotation])
+        bar_cal = self.ui.widget.canvas.period_percent_rate.bar(draw_data.index+bar_width, draw_data.percent_net_now, bar_width, color = 'y', picker = 5)
+        # bar_com = self.ui.widget.canvas.period_percent_rate.plot(draw_data.percent_net, color = 'b')
+
+        # bar_cal = self.ui.widget.canvas.period_percent_rate.plot(draw_data.percent_net_now, color = 'y')
+        # pione_cal, = self.ui.widget.canvas.period_percent_rate.plot(draw_data.index, draw_data.percent_net_now, 'go')
+        self.ui.widget.canvas.period_percent_rate.legend([bar_com, bar_cal], [u'公司公布', u'重新计算'])
         self.ui.widget.canvas.period_percent_rate.xaxis.grid(True, which='major')
+        self.ui.widget.canvas.period_percent_rate.yaxis.grid(True)
         self.ui.widget.canvas.period_percent_rate.set_ylim(0, max(draw_data.percent_net_now)+max(draw_data.percent_net_now) * 0.2)
         self.ui.widget.canvas.period_percent_rate.set_xticklabels(['0'] + ['0'] + list(x))
-        # self.text = self.ui.widget.canvas.period_percent_rate.text(1, 3, "this is initial")
-        self.ui.widget.canvas.draw()
+
+
+
+        # print self.points_with_annotation
         # print draw_data
-        # self.mousePressEvent(self, ui.widget.canvas.period_percent_rate)
-        # return end_day
-        # self.ui.widget.canvas.today_percent_rate.bar()
-        return draw_data
+        # self.ui.widget.canvas.draw()
+        return self.points_with_annotation
 
     # define mouse clicks events
     def on_pick(self, event):
-        ChineseFont1 = FontProperties(fname = '/usr/share/fonts/truetype/wqy/wqy-microhei.ttc')
+        # ChineseFont1 = FontProperties(fname = '/usr/share/fonts/truetype/wqy/wqy-microhei.ttc')
         artist = event.artist
+        print artist
         x = artist.get_bbox().x0
         y = artist.get_bbox().y1
         my_data = self.draw_today_Pnet()
         stock_code = my_data[my_data.index == int(x)]['stock_code']
         stock_code = stock_code.ix[int(x), 0]
-        self.text = self.ui.widget.canvas.period_percent_rate.text(x, y, u'股票代码: %s' % stock_code, fontproperties = ChineseFont1)
+        self.text = self.ui.widget.canvas.period_percent_rate.text(x, y, u'股票代码: %s' % stock_code, fontproperties = self.ChineseFont1)
         # self.text.set_text("")
         self.ui.widget.canvas.draw()
-        # return (x, y)
+        print x
+        print y
+        return (x, y)
+
     def offclick(self, event):
+        try:
+            self.text.remove()
+            self.ui.widget.canvas.draw()
+        except:
+            pass
 
-        self.text.remove()
-        self.ui.widget.canvas.draw()
+    def eventFilter(self, obj, event):
+        if(obj == self.ui.widget):
+            print "test"
+        if (event.type() == QtCore.QEvent.MouseButtonPress):
+            self.ui.widget.canvas.mpl_connect('pick_event', self.on_pick)
+        if (event.type() == QtCore.QEvent.MouseButtonDblClick):
+            print "obj"
 
-    # def doubleclick(event):
+    def move_on(self, event):
+
+        visibility_changed = False
+        for bar, annotation in self.draw_today_Pnet():
+            should_be_visible = (bar.contains(event)[0] == True)
+            print bar.contains()
+
+            if should_be_visible != annotation.get_visible():
+                visibility_changed = True
+                annotation.set_visible(should_be_visible)
+
+        if visibility_changed:
+            self.ui.widget.canvas.draw()
 
 
 

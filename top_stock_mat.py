@@ -11,17 +11,17 @@ class MplCanvas(FigureCanvas):
 
     def __init__(self):
         self.fig = Figure()
-        self.period_percent_rate = self.fig.add_subplot(211)
+        self.period_percent_rate = self.fig.add_subplot(111)
 
         FigureCanvas.__init__(self, self.fig)
-        FigureCanvas.setSizePolicy(self, QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Expanding)
+        FigureCanvas.setSizePolicy(self, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
         FigureCanvas.updateGeometry(self)
 
-        self.stock_percent_change = self.fig.add_subplot(212)
-
-        FigureCanvas.__init__(self, self.fig)
-        FigureCanvas.setSizePolicy(self, QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Expanding)
-        FigureCanvas.updateGeometry(self)
+        # self.stock_percent_change = self.fig.add_subplot(212)
+        #
+        # FigureCanvas.__init__(self, self.fig)
+        # FigureCanvas.setSizePolicy(self, QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Expanding)
+        # FigureCanvas.updateGeometry(self)
 
 
 class top_stock_mat(QtGui.QWidget):
