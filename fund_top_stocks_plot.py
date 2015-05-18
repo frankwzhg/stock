@@ -10,6 +10,7 @@ from rate_plot import *
 import pandas as pd
 import dateutil
 from matplotlib.ticker import MultipleLocator, FormatStrFormatter
+from datetime import timedelta
 
 class GUIForm(QtGui.QMainWindow):
 
@@ -30,7 +31,6 @@ class GUIForm(QtGui.QMainWindow):
         self.draw_today_Pnet()
         # self.eventFilter(self.ui.widget.canvas.period_percent_rate)
         self.my_con()
-        #
         # print self.get_fund_code()
         #
         # print self.fund_rate()
@@ -38,7 +38,7 @@ class GUIForm(QtGui.QMainWindow):
 # get fund code under condition selected
     def get_fund_code(self):
 
-        fund_data = self.fund_data()
+        fund_data = self.fund_data()[0]
         fund_code = list(fund_data.code.drop_duplicates('code'))
         return fund_code
 
@@ -67,12 +67,10 @@ class GUIForm(QtGui.QMainWindow):
 
     def fund_rate(self):
         fund_code = self.ui.fund_code.currentText()
-        self.fund_date = self.ui.fund_date.date().toPyDate()
+        # self.fund_date = self.ui.fund_date.date().toPyDate()
         table_name = self.table_name()[0]
-        sql_script = "select rate from %s where get_date = '%s' and code = '%s'" % (table_name, str(self.fund_date), fund_code)
+        sql_script = "select rate from %s where get_date = '%s' and code = '%s'" % (table_name, str(self.fund_data()[1]), fund_code)
         fund_rate = read(sql_script)
-        # print fund_rate.ix[0, 0]
-        # fund_rate = str(float("{0:.3f}".format(fund_rate.ix[0, 0])))
         fund_rate = '%.3f' % fund_rate.ix[0, 0]
         return fund_rate
 
@@ -80,10 +78,20 @@ class GUIForm(QtGui.QMainWindow):
     def fund_data(self):
         table_name = self.table_name()[1]
         fund_date = self.ui.fund_date.date().toPyDate()
-        sql_script = "select * from %s where get_date = '%s'" % (table_name, fund_date)
-        fund_data_all = read(sql_script)
+        # sql_script = "select * from %s where get_date = '%s'" % (table_name, fund_date)
+        # fund_data_all = read(sql_script)
+        condition = True
+        while(condition):
+            sql_script = "select * from %s where get_date = '%s'" % (table_name, fund_date)
+            fund_data_all = read(sql_script)
+            if (len(fund_data_all) == 0):
+                fund_date = fund_date - timedelta(days = 1)
+                self.ui.fund_date.setDate(fund_date)
+            else:
+                condition = False
 
-        return fund_data_all
+
+        return (fund_data_all, fund_date)
     # define event to change value
 
     def my_con(self):
@@ -125,9 +133,9 @@ class GUIForm(QtGui.QMainWindow):
     #get top_stocks for each fund
     def get_top_stocks(self):
         table_name = self.table_name()[1]
-        get_date = self.ui.fund_date.date().toPyDate()
+        # get_date = self.ui.fund_date.date().toPyDate()
         fund_code = self.ui.fund_code.currentText()
-        sql_script = "select stock_code, percent_net, percent_net_now from %s where get_date = '%s' and code = '%s'" % (table_name, get_date, fund_code)
+        sql_script = "select stock_code, percent_net, percent_net_now from %s where get_date = '%s' and code = '%s'" % (table_name, self.fund_data()[1], fund_code)
         top_stocks = read(sql_script)
         # top_stocks = self.fund_data()[self.fund_data().code == fund_code]
         # print top_stocks
@@ -148,7 +156,7 @@ class GUIForm(QtGui.QMainWindow):
 
     def draw_today_Pnet(self):
         input_day = self.ui.fund_date.date()
-        start_day = QtCore.QDate.addDays(input_day, -3).toPyDate()
+        start_day = QtCore.QDate.addDays(input_day, -5).toPyDate()
         end_day = input_day.toPyDate()
         # print end_day, start_day
         table_name = self.table_name()
@@ -156,7 +164,6 @@ class GUIForm(QtGui.QMainWindow):
 
         draw_data_sql = "select code, stock_code, percent_net, percent_net_now, get_date from %s where code = '%s' and get_date>= '%s' and get_date < '%s'" % (table_name[1], fund_code, start_day, end_day)
         draw_data = read(draw_data_sql)
-        # print draw_data
         x = draw_data.get_date.drop_duplicates('get_date')
         # print list(x)
         bar_width = 0.35
@@ -164,31 +171,32 @@ class GUIForm(QtGui.QMainWindow):
         self.ui.widget.canvas.period_percent_rate.clear()
         self.ui.widget.canvas.period_percent_rate.set_title(u'十大股票基金中比率变化图', fontproperties = self.ChineseFont1)
         self.ui.widget.canvas.period_percent_rate.xaxis.set_major_locator(MultipleLocator(10))
-        self.points_with_annotation = []
+        points_with_annotation = []
         for i in draw_data.index:
             # point_com, = self.ui.widget.canvas.period_percent_rate.plot(draw_data.index, draw_data.percent_net, 'ro', markersize=10)
-            bar_com = self.ui.widget.canvas.period_percent_rate.bar(draw_data.index, draw_data.percent_net, bar_width, color = 'b', picker = 5)
-            print bar_com
+            # bar_com = self.ui.widget.canvas.period_percent_rate.bar(draw_data.index, draw_data.percent_net, bar_width, color = 'b', picker = 5)
+            # bar_com = self.ui.widget.canvas.period_percent_rate.plot(draw_data.percent_net, color = 'b')
+
+            # bar_cal = self.ui.widget.canvas.period_percent_rate.plot(draw_data.percent_net_now, color = 'y')
+            point_com, = self.ui.widget.canvas.period_percent_rate.plot(draw_data.index, draw_data.percent_net, 'ro', markersize = 10)
+            point_cal = self.ui.widget.canvas.period_percent_rate.plot(draw_data.index, draw_data.percent_net_now, 'go')
             annotation = self.ui.widget.canvas.period_percent_rate.annotate("this is a test", xy=(draw_data.index[i], draw_data.percent_net[i]), xytext=(draw_data.index[i]+0.5, draw_data.percent_net[i]))
             annotation.set_visible(False)
-            self.points_with_annotation.append([bar_com, annotation])
-        bar_cal = self.ui.widget.canvas.period_percent_rate.bar(draw_data.index+bar_width, draw_data.percent_net_now, bar_width, color = 'y', picker = 5)
-        # bar_com = self.ui.widget.canvas.period_percent_rate.plot(draw_data.percent_net, color = 'b')
+            points_with_annotation.append([point_com, annotation])
+        # bar_cal = self.ui.widget.canvas.period_percent_rate.bar(draw_data.index+bar_width, draw_data.percent_net_now, bar_width, color = 'y', picker = 5)
 
-        # bar_cal = self.ui.widget.canvas.period_percent_rate.plot(draw_data.percent_net_now, color = 'y')
-        # pione_cal, = self.ui.widget.canvas.period_percent_rate.plot(draw_data.index, draw_data.percent_net_now, 'go')
-        self.ui.widget.canvas.period_percent_rate.legend([bar_com, bar_cal], [u'公司公布', u'重新计算'])
+        # self.ui.widget.canvas.period_percent_rate.legend([point_com, bar_cal], [u'公司公布', u'重新计算'])
         self.ui.widget.canvas.period_percent_rate.xaxis.grid(True, which='major')
         self.ui.widget.canvas.period_percent_rate.yaxis.grid(True)
         self.ui.widget.canvas.period_percent_rate.set_ylim(0, max(draw_data.percent_net_now)+max(draw_data.percent_net_now) * 0.2)
         self.ui.widget.canvas.period_percent_rate.set_xticklabels(['0'] + ['0'] + list(x))
 
 
-
+        self.ui.widget.canvas.draw()
         # print self.points_with_annotation
         # print draw_data
-        # self.ui.widget.canvas.draw()
-        return self.points_with_annotation
+        # print self.points_with_annotation
+        return points_with_annotation
 
     # define mouse clicks events
     def on_pick(self, event):
@@ -223,13 +231,14 @@ class GUIForm(QtGui.QMainWindow):
             print "obj"
 
     def move_on(self, event):
-
         visibility_changed = False
-        for bar, annotation in self.draw_today_Pnet():
-            should_be_visible = (bar.contains(event)[0] == True)
-            print bar.contains()
+        for point, annotation in self.draw_today_Pnet():
+
+            should_be_visible = (point.contains(event)[0] == True)
+            # print "should_be_visible %s" % should_be_visible
 
             if should_be_visible != annotation.get_visible():
+                # print annotation.get_visible()
                 visibility_changed = True
                 annotation.set_visible(should_be_visible)
 
