@@ -25,10 +25,11 @@ print points_with_annotation
 
 
 def on_move(event):
-    print type(points_with_annotation)
     visibility_changed = False
     for point, annotation in points_with_annotation:
-
+        print point
+        print point.contains(event)
+        print event
         should_be_visible = (point.contains(event)[0] == True)
         # print "shoulde_be_visible: %s" % should_be_visible
         # print "annotataion %s" % annotation.get_visible()

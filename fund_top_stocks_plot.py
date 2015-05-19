@@ -11,6 +11,7 @@ import pandas as pd
 import dateutil
 from matplotlib.ticker import MultipleLocator, FormatStrFormatter
 from datetime import timedelta
+import matplotlib.pyplot as plt
 
 class GUIForm(QtGui.QMainWindow):
 
@@ -155,6 +156,8 @@ class GUIForm(QtGui.QMainWindow):
                 self.ui.top_stocks.setItem(i, j, QtGui.QTableWidgetItem(str(top_stocks_data.iget_value(i, j))))
 
     def draw_today_Pnet(self):
+
+        # ax = plt.axes()
         input_day = self.ui.fund_date.date()
         start_day = QtCore.QDate.addDays(input_day, -5).toPyDate()
         end_day = input_day.toPyDate()
@@ -164,7 +167,7 @@ class GUIForm(QtGui.QMainWindow):
 
         draw_data_sql = "select code, stock_code, percent_net, percent_net_now, get_date from %s where code = '%s' and get_date>= '%s' and get_date < '%s'" % (table_name[1], fund_code, start_day, end_day)
         draw_data = read(draw_data_sql)
-        x = draw_data.get_date.drop_duplicates('get_date')
+        xaxes_date = draw_data.get_date.drop_duplicates('get_date')
         # print list(x)
         bar_width = 0.35
 
@@ -172,24 +175,24 @@ class GUIForm(QtGui.QMainWindow):
         self.ui.widget.canvas.period_percent_rate.set_title(u'十大股票基金中比率变化图', fontproperties = self.ChineseFont1)
         self.ui.widget.canvas.period_percent_rate.xaxis.set_major_locator(MultipleLocator(10))
         points_with_annotation = []
-        for i in draw_data.index:
-            # point_com, = self.ui.widget.canvas.period_percent_rate.plot(draw_data.index, draw_data.percent_net, 'ro', markersize=10)
-            # bar_com = self.ui.widget.canvas.period_percent_rate.bar(draw_data.index, draw_data.percent_net, bar_width, color = 'b', picker = 5)
-            # bar_com = self.ui.widget.canvas.period_percent_rate.plot(draw_data.percent_net, color = 'b')
+        # for i in draw_data.index:
+            # bar_com, = self.ui.widget.canvas.period_percent_rate.plot(draw_data.index, draw_data.percent_net, 'b')
+        bar_com = self.ui.widget.canvas.period_percent_rate.bar(draw_data.index, draw_data.percent_net, bar_width, color = 'b', picker = 5)
+        bar_cal = self.ui.widget.canvas.period_percent_rate.bar(draw_data.index + bar_width, draw_data.percent_net_now, bar_width, color = 'y', picker = 5)
 
             # bar_cal = self.ui.widget.canvas.period_percent_rate.plot(draw_data.percent_net_now, color = 'y')
-            point_com, = self.ui.widget.canvas.period_percent_rate.plot(draw_data.index, draw_data.percent_net, 'ro', markersize = 10)
-            point_cal = self.ui.widget.canvas.period_percent_rate.plot(draw_data.index, draw_data.percent_net_now, 'go')
-            annotation = self.ui.widget.canvas.period_percent_rate.annotate("this is a test", xy=(draw_data.index[i], draw_data.percent_net[i]), xytext=(draw_data.index[i]+0.5, draw_data.percent_net[i]))
-            annotation.set_visible(False)
-            points_with_annotation.append([point_com, annotation])
+            # point_com, = self.ui.widget.canvas.period_percent_rate.plot(draw_data.index[i], draw_data.percent_net[i], 'ro', markersize = 8)
+            # point_cal = self.ui.widget.canvas.period_percent_rate.plot(draw_data.index[i], draw_data.percent_net_now[i], 'go', markersize = 10)
+        annotation = self.ui.widget.canvas.period_percent_rate.axes.annotate("this is a test", xy=(draw_data.index, max(draw_data.percent_net)), xytext=(draw_data.index+0.5, draw_data.percent_net))
+        annotation.set_visible(True)
+            # points_with_annotation.append([bar_com, annotation])
         # bar_cal = self.ui.widget.canvas.period_percent_rate.bar(draw_data.index+bar_width, draw_data.percent_net_now, bar_width, color = 'y', picker = 5)
 
         # self.ui.widget.canvas.period_percent_rate.legend([point_com, bar_cal], [u'公司公布', u'重新计算'])
         self.ui.widget.canvas.period_percent_rate.xaxis.grid(True, which='major')
         self.ui.widget.canvas.period_percent_rate.yaxis.grid(True)
         self.ui.widget.canvas.period_percent_rate.set_ylim(0, max(draw_data.percent_net_now)+max(draw_data.percent_net_now) * 0.2)
-        self.ui.widget.canvas.period_percent_rate.set_xticklabels(['0'] + ['0'] + list(x))
+        self.ui.widget.canvas.period_percent_rate.set_xticklabels(['0'] + ['0'] + list(xaxes_date))
 
 
         self.ui.widget.canvas.draw()
@@ -233,17 +236,19 @@ class GUIForm(QtGui.QMainWindow):
     def move_on(self, event):
         visibility_changed = False
         for point, annotation in self.draw_today_Pnet():
-
-            should_be_visible = (point.contains(event)[0] == True)
-            # print "should_be_visible %s" % should_be_visible
-
-            if should_be_visible != annotation.get_visible():
-                # print annotation.get_visible()
-                visibility_changed = True
-                annotation.set_visible(should_be_visible)
-
-        if visibility_changed:
-            self.ui.widget.canvas.draw()
+            print point
+            print event.xdata
+        #     should_be_visible = (point.contains(event)[0] == True)
+        #     # print "should_be_visible %s" % should_be_visible
+        #
+        #     if should_be_visible != annotation.get_visible():
+        #
+        #         visibility_changed = True
+        #         print "annotation: %s" % annotation
+        #         annotation.set_visible(should_be_visible)
+        #
+        # if visibility_changed:
+        #     self.ui.widget.canvas.draw()
 
 
 
