@@ -1,45 +1,25 @@
-"""
-Bar chart demo with pairs of bars grouped for easy comparison.
-"""
-import numpy as np
-import matplotlib.pyplot as plt
+from matplotlib import pyplot as plt
 
+class LineBuilder:
+    def __init__(self, line):
+        self.line = line
+        self.xs = list(line.get_xdata())
+        self.ys = list(line.get_ydata())
+        self.cid = line.figure.canvas.mpl_connect('button_press_event', self)
 
-n_groups = 5
+    def __call__(self, event):
+        print 'click', event
+        print self.line.axes
+        if event.inaxes!=self.line.axes: return
+        self.xs.append(event.xdata)
+        self.ys.append(event.ydata)
+        self.line.set_data(self.xs, self.ys)
+        self.line.figure.canvas.draw()
 
-means_men = (20, 35, 30, 35, 27)
-std_men = (2, 3, 4, 1, 2)
+fig = plt.figure()
+ax = fig.add_subplot(111)
+ax.set_title('click to build line segments')
+line, = ax.plot([0], [0])  # empty line
+linebuilder = LineBuilder(line)
 
-means_women = (25, 32, 34, 20, 25)
-std_women = (3, 5, 2, 3, 3)
-
-fig, ax = plt.subplots()
-
-index = np.arange(n_groups)
-bar_width = 0.35
-
-opacity = 0.4
-error_config = {'ecolor': '0.3'}
-
-rects1 = plt.bar(index, means_men, bar_width,
-                 alpha=opacity,
-                 color='b',
-                 yerr=std_men,
-                 error_kw=error_config,
-                 label='Men')
-
-rects2 = plt.bar(index + bar_width, means_women, bar_width,
-                 alpha=opacity,
-                 color='r',
-                 yerr=std_women,
-                 error_kw=error_config,
-                 label='Women')
-
-plt.xlabel('Group')
-plt.ylabel('Scores')
-plt.title('Scores by group and gender')
-plt.xticks(index + bar_width, ('A', 'B', 'C', 'D', 'E'))
-plt.legend()
-
-plt.tight_layout()
 plt.show()

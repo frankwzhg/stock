@@ -20,7 +20,7 @@ class GUIForm(QtGui.QMainWindow):
     def __init__(self, parent=None):
 
         QtGui.QDialog.__init__(self, parent)
-        self.ChineseFont1 = FontProperties(fname = '/usr/share/fonts/truetype/wqy/wqy-microhei.ttc')
+        self.ChineseFont1 = FontProperties(fname = '/Library/Fonts/microsoft/Fangsong.ttf')
         # self.fund_rate = self.fund_rate()
         # self.fund_data = self.fund_data()
         self.ui = Ui_MainWindow()
@@ -110,7 +110,7 @@ class GUIForm(QtGui.QMainWindow):
         # self.ui.widget.canvas.setMouseTracking(True)
         # self.ui.widget.canvas.installEventFilter(self)
 
-        # self.ui.widget.canvas.mpl_connect('pick_event', self.on_pick)
+        self.ui.widget.canvas.mpl_connect('pick_event', self.on_pick)
         # self.ui.widget.canvas.mpl_connect('pick_event', self.on_pick)
         # self.ui.widget.canvas.mpl_connect('button_release_event', self.offclick)
 
@@ -157,49 +157,37 @@ class GUIForm(QtGui.QMainWindow):
 
     def draw_today_Pnet(self):
 
-        # ax = plt.axes()
         input_day = self.ui.fund_date.date()
         start_day = QtCore.QDate.addDays(input_day, -5).toPyDate()
         end_day = input_day.toPyDate()
-        # print end_day, start_day
         table_name = self.table_name()
         fund_code = self.ui.fund_code.currentText()
 
         draw_data_sql = "select code, stock_code, percent_net, percent_net_now, get_date from %s where code = '%s' and get_date>= '%s' and get_date < '%s'" % (table_name[1], fund_code, start_day, end_day)
         draw_data = read(draw_data_sql)
         xaxes_date = draw_data.get_date.drop_duplicates('get_date')
-        # print list(x)
         bar_width = 0.35
 
         self.ui.widget.canvas.period_percent_rate.clear()
         self.ui.widget.canvas.period_percent_rate.set_title(u'十大股票基金中比率变化图', fontproperties = self.ChineseFont1)
         self.ui.widget.canvas.period_percent_rate.xaxis.set_major_locator(MultipleLocator(10))
-        points_with_annotation = []
-        # for i in draw_data.index:
-            # bar_com, = self.ui.widget.canvas.period_percent_rate.plot(draw_data.index, draw_data.percent_net, 'b')
-        bar_com = self.ui.widget.canvas.period_percent_rate.bar(draw_data.index, draw_data.percent_net, bar_width, color = 'b', picker = 5)
-        bar_cal = self.ui.widget.canvas.period_percent_rate.bar(draw_data.index + bar_width, draw_data.percent_net_now, bar_width, color = 'y', picker = 5)
+        # points_with_annotation = []
+        index_with_annotation = []
+        for i in draw_data.index:
+            bar_com = self.ui.widget.canvas.period_percent_rate.bar(draw_data.index[i], draw_data.percent_net[i], bar_width, color = 'b', picker = 5)
+            bar_cal = self.ui.widget.canvas.period_percent_rate.bar(draw_data.index[i] + bar_width, draw_data.percent_net_now[i], bar_width, color = 'y', picker = 5)
 
-            # bar_cal = self.ui.widget.canvas.period_percent_rate.plot(draw_data.percent_net_now, color = 'y')
-            # point_com, = self.ui.widget.canvas.period_percent_rate.plot(draw_data.index[i], draw_data.percent_net[i], 'ro', markersize = 8)
-            # point_cal = self.ui.widget.canvas.period_percent_rate.plot(draw_data.index[i], draw_data.percent_net_now[i], 'go', markersize = 10)
-        annotation = self.ui.widget.canvas.period_percent_rate.axes.annotate("this is a test", xy=(draw_data.index, max(draw_data.percent_net)), xytext=(draw_data.index+0.5, draw_data.percent_net))
-        annotation.set_visible(True)
-            # points_with_annotation.append([bar_com, annotation])
-        # bar_cal = self.ui.widget.canvas.period_percent_rate.bar(draw_data.index+bar_width, draw_data.percent_net_now, bar_width, color = 'y', picker = 5)
 
-        # self.ui.widget.canvas.period_percent_rate.legend([point_com, bar_cal], [u'公司公布', u'重新计算'])
+        self.ui.widget.canvas.period_percent_rate.legend([bar_com, bar_cal], ['compay', 'recal'])
         self.ui.widget.canvas.period_percent_rate.xaxis.grid(True, which='major')
         self.ui.widget.canvas.period_percent_rate.yaxis.grid(True)
         self.ui.widget.canvas.period_percent_rate.set_ylim(0, max(draw_data.percent_net_now)+max(draw_data.percent_net_now) * 0.2)
         self.ui.widget.canvas.period_percent_rate.set_xticklabels(['0'] + ['0'] + list(xaxes_date))
-
-
         self.ui.widget.canvas.draw()
         # print self.points_with_annotation
         # print draw_data
         # print self.points_with_annotation
-        return points_with_annotation
+        return (draw_data, index_with_annotation)
 
     # define mouse clicks events
     def on_pick(self, event):
@@ -234,21 +222,12 @@ class GUIForm(QtGui.QMainWindow):
             print "obj"
 
     def move_on(self, event):
-        visibility_changed = False
-        for point, annotation in self.draw_today_Pnet():
-            print point
-            print event.xdata
-        #     should_be_visible = (point.contains(event)[0] == True)
-        #     # print "should_be_visible %s" % should_be_visible
-        #
-        #     if should_be_visible != annotation.get_visible():
-        #
-        #         visibility_changed = True
-        #         print "annotation: %s" % annotation
-        #         annotation.set_visible(should_be_visible)
-        #
-        # if visibility_changed:
-        #     self.ui.widget.canvas.draw()
+
+        for i in self.draw_today_Pnet()[0].index:
+            if (i == int(event.xdata)):
+                self.ui.widget.canvas.period_percent_rate.text(event.xdata, max(self.draw_today_Pnet()[0].percent_net[i]+1, self.draw_today_Pnet()[0].percent_net_now[i]+1), self.draw_today_Pnet()[0].stock_code[i], color = "red")
+                self.ui.widget.canvas.draw()
+
 
 
 

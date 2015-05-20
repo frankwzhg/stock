@@ -6,12 +6,22 @@
 import pandas as pd
 from pandas.io import sql
 import MySQLdb
+import socket
+
+
+# where is the client from, external or internal?
+try:
+    socket.gethostbyname("frankub")
+    hostname = "frankub"
+except:
+    hostname = "frankr.jios.org"
 
 
 # save fund stock data into msysql database
 
+
 def save(data_frame, tablname):
-    db = MySQLdb.connect('frankub', 'root', 'Dadi4747', 'test', charset='utf8')                              #build mysql link
+    db = MySQLdb.connect(hostname, 'root', 'Dadi4747', 'test', charset='utf8')                              #build mysql link
     # sql.write_frame(data_frame, con=db, name=tablname, if_exists='append', flavor='mysql')
     sql.to_sql(data_frame, con=db, name=tablname, if_exists='append', flavor='mysql', index=False)
     db.close()
@@ -19,7 +29,7 @@ def save(data_frame, tablname):
 
 
 def read(sql_script):
-    db = MySQLdb.connect('frankub', 'root', 'Dadi4747', 'test', charset='utf8')
+    db = MySQLdb.connect(hostname, 'root', 'Dadi4747', 'test', charset='utf8')
     # my_data = sql.frame_query(sql_script, con=db)
     my_data = pd.read_sql(sql_script, con=db)
     return my_data
