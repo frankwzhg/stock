@@ -37,6 +37,23 @@ def stock_df_temp(pag_num):
     # test = stock_temp
     return stock_temp
 
+def save_data():
+    pag_num = 1
+    doit = True
+    stock_df = pd.DataFrame()
+    while (doit):
+        # print len(stock_df_temp(pag_num))
+        # print pag_num
+        # print len(stock_df_temp(pag_num+1))
+        stock_df = stock_df.append(stock_df_temp(pag_num))
+        if len(stock_df_temp(pag_num)) == 40:
+            pag_num = pag_num + 1
+        else:
+            doit = False
+    op_db.save(stock_df, "stock_data")
+    return stock_df
+
+
 if __name__ == "__main__":
     pag_num = 1
     doit = True

@@ -56,19 +56,22 @@ def get_stock_net(fund_code_list):
 
 # get fund data, and then split fund code
 def get_fund_top_stocks(fund_name):
-    sel_date = strftime("%Y-%m-%d", gmtime())
+    # sel_date = strftime("%Y-%m-%d", gmtime())
+    sel_date = '2015-05-19'
     fund_code = op_db.read("select code from test." + fund_name + "_FD where get_date =" + "'" + sel_date + "'")
     # print 'fund_code ' + fund_code
     fund_stock_code = op_db.read("select code from test." + fund_name + "_SK where get_date=" + "'" + sel_date + "'")
     # print 'fund_stock_code ' + fund_stock_code
     fund_code = fund_code[fund_code['code'].isin(fund_stock_code.code)]
+    print "fund code: %s" % fund_code
     top_stock = get_stock_net(fund_code)
     top_stock['get_date'] = sel_date
     return top_stock
 if __name__ == "__main__":
-    for fund in ["fund_Close", "fund_ETF", "fund_LOF", "fund_creative"]:
+    # for fund in ["fund_Close", "fund_ETF", "fund_LOF", "fund_creative"]:
+    for fund in ["fund_creative"]:
         stocks = get_fund_top_stocks(fund)
-        # print stocks
-        op_db.save(stocks, fund + '_top_stocks')
+        print "stock: %s" % stocks
+        # op_db.save(stocks, fund + '_top_stocks')
     # print get_fund_top_stocks("fund_Close")
     # print top_stock_allF

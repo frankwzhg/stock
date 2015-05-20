@@ -20,7 +20,7 @@ class GUIForm(QtGui.QMainWindow):
     def __init__(self, parent=None):
 
         QtGui.QDialog.__init__(self, parent)
-        self.ChineseFont1 = FontProperties(fname = '/Library/Fonts/microsoft/Fangsong.ttf')
+        # self.ChineseFont1 = FontProperties(fname = '/Library/Fonts/microsoft/Fangsong.ttf')
         # self.fund_rate = self.fund_rate()
         # self.fund_data = self.fund_data()
         self.ui = Ui_MainWindow()
@@ -106,11 +106,11 @@ class GUIForm(QtGui.QMainWindow):
         QtCore.QObject.connect(self.ui.fund_date, QtCore.SIGNAL('dateChanged(QDate)'), self.update_fund_date)
         QtCore.QObject.connect(self.ui.fund_date, QtCore.SIGNAL('dateChanged(QDate)'), self.top_stock_table)
         QtCore.QObject.connect(self.ui.fund_date, QtCore.SIGNAL('dateChanged(QDate)'), self.draw_today_Pnet)
-        self.ui.widget.canvas.mpl_connect('motion_notify_event', self.move_on)
+        # self.ui.widget.canvas.mpl_connect('motion_notify_event', self.move_on)
         # self.ui.widget.canvas.setMouseTracking(True)
-        # self.ui.widget.canvas.installEventFilter(self)
+        self.ui.widget.canvas.installEventFilter(self)
 
-        self.ui.widget.canvas.mpl_connect('pick_event', self.on_pick)
+        # self.ui.widget.canvas.mpl_connect('pick_event', self.on_pick)
         # self.ui.widget.canvas.mpl_connect('pick_event', self.on_pick)
         # self.ui.widget.canvas.mpl_connect('button_release_event', self.offclick)
 
@@ -169,7 +169,7 @@ class GUIForm(QtGui.QMainWindow):
         bar_width = 0.35
 
         self.ui.widget.canvas.period_percent_rate.clear()
-        self.ui.widget.canvas.period_percent_rate.set_title(u'十大股票基金中比率变化图', fontproperties = self.ChineseFont1)
+        self.ui.widget.canvas.period_percent_rate.set_title(u'top stocks rate changed ')
         self.ui.widget.canvas.period_percent_rate.xaxis.set_major_locator(MultipleLocator(10))
         # points_with_annotation = []
         index_with_annotation = []
@@ -192,19 +192,18 @@ class GUIForm(QtGui.QMainWindow):
     # define mouse clicks events
     def on_pick(self, event):
         # ChineseFont1 = FontProperties(fname = '/usr/share/fonts/truetype/wqy/wqy-microhei.ttc')
+        global stock_code
         artist = event.artist
-        print artist
         x = artist.get_bbox().x0
         y = artist.get_bbox().y1
         my_data = self.draw_today_Pnet()
         stock_code = my_data[my_data.index == int(x)]['stock_code']
         stock_code = stock_code.ix[int(x), 0]
-        self.text = self.ui.widget.canvas.period_percent_rate.text(x, y, u'股票代码: %s' % stock_code, fontproperties = self.ChineseFont1)
+        self.text = self.ui.widget.canvas.period_percent_rate.text(x, y, u'stock_code: %s' % stock_code)
         # self.text.set_text("")
         self.ui.widget.canvas.draw()
-        print x
-        print y
-        return (x, y)
+
+        # return stock_code
 
     def offclick(self, event):
         try:
@@ -212,14 +211,25 @@ class GUIForm(QtGui.QMainWindow):
             self.ui.widget.canvas.draw()
         except:
             pass
-
+    def draw_stock_plot(self):
+        stock_sql = "select buy, get_date from stock_data where code = '%s'" % stock_code
+        print stock_sql
+        stock_data = read(stock_sql)
+        print stock_data
+        figi = plt.figure()
+        ax = figi.add_subplot(111)
+        ax.plot(stock_data.buy)
+        figi.show()
     def eventFilter(self, obj, event):
-        if(obj == self.ui.widget):
-            print "test"
+
         if (event.type() == QtCore.QEvent.MouseButtonPress):
             self.ui.widget.canvas.mpl_connect('pick_event', self.on_pick)
         if (event.type() == QtCore.QEvent.MouseButtonDblClick):
-            print "obj"
+            self.draw_stock_plot()
+            # print stock_code
+
+            # print "test"
+
 
     def move_on(self, event):
 
