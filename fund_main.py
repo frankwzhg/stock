@@ -3,28 +3,25 @@
 import os
 import op_database as op_db
 from time import strftime, gmtime, sleep, localtime
+import importlib
 
 # load data for each module
 
 
-def run_module(mdu, funct, table_name_list):
+def run_module(module, table_name_list):
 
     sel_date = strftime("%Y-%m-%d", gmtime())
     for table_name in table_name_list:
         temp = op_db.read("select count(*) from test." + table_name + " where get_date =" + "'" + sel_date + "'")
-        print temp
         while (temp.ix[0, 0] == 0):
             try:
-                # print funct
-                import mdu
-                print
-                funct()
-
+                mod = importlib.import_module(module)
+                mod.save_data(table_name)
                 temp = op_db.read("select count(*) from test." + table_name + " where get_date= " + "'" + sel_date + "'")
-                print temp
                 # print temp.ix[0,0]
-                sleep(30)
+                # sleep(300)
             except:
+                sleep(60)
                 temp.ix[0, 0] = 0
             # temp = op_db.read("select count(*) from test." + table_name + " where get_date= " + "'"
             # + sel_date + "'")
@@ -32,7 +29,8 @@ def run_module(mdu, funct, table_name_list):
 
 if __name__ == "__main__":
 
-    run_module("stock_data", "save_data", ['stock_data'])
+    run_module("stock_data", ['stock_data'])
+    # run_module("fund_stock_close_ETF_LOF_sina", ['fund_Close_SK', 'fund_ETF_SK', 'fund_LOF_SK'])
 # if __name__ == "__main__":
 #     run_module('/home/frank/stock/stock_data.py', ['stock_data'])
 #     run_module('/home/frank/stock/fund_stock_close_ETF_LOF_sina.py', ['fund_Close_SK', 'fund_ETF_SK', 'fund_LOF_SK'])

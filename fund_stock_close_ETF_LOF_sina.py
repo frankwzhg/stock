@@ -8,12 +8,14 @@ import op_database as op_db
 from pandas.io.json import json_normalize
 from time import strftime, gmtime
 
-def get_fund_data_sina(url_first, page_num, url_last):
-    fund_data_df = pd.DataFrame()
 
+def get_fund_data_sina(url1):
+    print url1
+    page_num = 0
+    fund_data_df = pd.DataFrame()
     page = True
     while(page):
-        url = url_first + str(page_num) + url_last
+        url = url1.format(page_num)
         req = urllib2.Request(url)
         res = urllib2.urlopen(req)
         raw_data = res.read()
@@ -31,22 +33,34 @@ def get_fund_data_sina(url_first, page_num, url_last):
             fund_df_tmp = fund_df_tmp.append(list_DF)
         if len(fund_df_tmp) == 40:
             page_num = page_num + 1
+            print page_num
+            # url = url.format(page_num)
+            # print url
+
         else:
             page = False
         fund_data_df = fund_data_df.append(fund_df_tmp)
 
     return fund_data_df
 
+# def save_data(table_name, page_num=1):
+
 
 if __name__ == "__main__":
     get_date = strftime("%Y-%m-%d", gmtime())
-    ETF_DF = get_fund_data_sina("http://vip.stock.finance.sina.com.cn/quotes_service/api/jsonp.php/IO.XSRV2.CallbackList['JVHWfRDKmSwbOcy1']/Market_Center.getHQNodeDataSimple?page=", 1, "&num=40&sort=symbol&asc=0&node=etf_hq_fund&%5Bobject%20HTMLDivElement%5D=me540")
-    ETF_DF["get_date"] = get_date
-    Close_DF = get_fund_data_sina("http://vip.stock.finance.sina.com.cn/quotes_service/api/jsonp.php/IO.XSRV2.CallbackList['JVHWfRDKmSwbOcy1']/Market_Center.getHQNodeDataSimple?page=", 1, "&num=40&sort=symbol&asc=0&node=close_fund&%5Bobject%20HTMLDivElement%5D=xsuqp")
-    Close_DF["get_date"] = get_date
-    LOF_DF = get_fund_data_sina("http://vip.stock.finance.sina.com.cn/quotes_service/api/jsonp.php/IO.XSRV2.CallbackList['JVHWfRDKmSwbOcy1']/Market_Center.getHQNodeDataSimple?page=", 1, "&num=40&sort=symbol&asc=0&node=lof_hq_fund&%5Bobject%20HTMLDivElement%5D=ycwtc")
-    LOF_DF["get_date"] = get_date
-    op_db.save(ETF_DF, "fund_ETF_SK")
-    op_db.save(Close_DF, "fund_Close_SK")
-    op_db.save(LOF_DF, "fund_LOF_SK")
+    # ETF_DF = get_fund_data_sina("http://vip.stock.finance.sina.com.cn/quotes_service/api/jsonp.php/IO.XSRV2.CallbackList['JVHWfRDKmSwbOcy1']/Market_Center.getHQNodeDataSimple?page=", 1, "&num=40&sort=symbol&asc=0&node=etf_hq_fund&%5Bobject%20HTMLDivElement%5D=me540")
+
+    url_list = "http://vip.stock.finance.sina.com.cn/quotes_service/api/jsonp.php/IO.XSRV2.CallbackList['JVHWfRDKmSwbOcy1']/Market_Center.getHQNodeDataSimple?page={0}&num=40&sort=symbol&asc=0&node=etf_hq_fund&%5Bobject%20HTMLDivElement%5D=me540"
+    # print url
+    print get_fund_data_sina(url)
+
+    # ETF_DF["get_date"] = get_date
+    # Close_DF = get_fund_data_sina("http://vip.stock.finance.sina.com.cn/quotes_service/api/jsonp.php/IO.XSRV2.CallbackList['JVHWfRDKmSwbOcy1']/Market_Center.getHQNodeDataSimple?page=", 1, "&num=40&sort=symbol&asc=0&node=close_fund&%5Bobject%20HTMLDivElement%5D=xsuqp")
+    # Close_DF["get_date"] = get_date
+    # LOF_DF = get_fund_data_sina("http://vip.stock.finance.sina.com.cn/quotes_service/api/jsonp.php/IO.XSRV2.CallbackList['JVHWfRDKmSwbOcy1']/Market_Center.getHQNodeDataSimple?page=", 1, "&num=40&sort=symbol&asc=0&node=lof_hq_fund&%5Bobject%20HTMLDivElement%5D=ycwtc")
+    # LOF_DF["get_date"] = get_date
+    # op_db.save(ETF_DF, "fund_ETF_SK")
+    # op_db.save(Close_DF, "fund_Close_SK")
+    # op_db.save(LOF_DF, "fund_LOF_SK")
+
 
