@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 
-import BeautifulSoup
+from bs4 import BeautifulSoup
 import pandas as pd
 import urllib2
 import numpy as np
@@ -24,14 +24,14 @@ sel_date = strftime("%Y-%m-%d", gmtime())
 def get_top_stock_each_fund(fund_code):
     url = "http://stock.finance.sina.com.cn/fundInfo/view/FundInfo_ZCGP.php?symbol=" + fund_code
     data = urllib2.urlopen(url).read()
-    bs = BeautifulSoup.BeautifulSoup(data)
+    bs = BeautifulSoup(data)
     top_stock = []
     for table in bs.findAll("tr", {"class": "f005"}):
-        # try:
-        for line in table.findAll("td"):
-            top_stock.append(line.text)
-        # except:
-        #     pass
+        try:
+            for line in table.findAll("td"):
+                top_stock.append(line.text)
+        except:
+            pass
     try:
         top_stock = np.array(top_stock).reshape(len(top_stock) / 9, 9)
         top_stock = pd.DataFrame(top_stock)
@@ -40,7 +40,6 @@ def get_top_stock_each_fund(fund_code):
         top_stock["F_code"] = fund_code
     except:
         pass
-    # print top_stock
     return top_stock
 
 
@@ -65,9 +64,13 @@ def get_fund_top_stocks(fund_name):
 def save_data(table_name):
     fund_name = table_name[:-11]
     stocks = get_fund_top_stocks(fund_name)
+    try:
+        op_db.save(stocks, table_name)
+    except:
+        stocks.to_csv("/home/frank/stock/data/{0}_{1}.csv".format(table_name, sel_date))
     return stocks
 if __name__ == "__main__":
-     print save_data("fund_ETF_top_stocks")
+     save_data("fund_LOF_top_stocks")
 
     # for fund in ["fund_Close", "fund_ETF", "fund_LOF", "fund_creative"]:
     # for fund in ["fund_creative"]:

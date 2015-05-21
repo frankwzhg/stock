@@ -30,7 +30,9 @@ if __name__ == "__main__":
     # run_module("stock_data", ['stock_data'])
     # run_module("fund_stock_close_ETF_LOF_sina", ['fund_Close_SK', 'fund_ETF_SK', 'fund_LOF_SK'])
     # run_module("fund_close_ETF_LOF_sina", ['fund_Close_FD', 'fund_ETF_FD', 'fund_LOF_FD'])
-    run_module("fund_creative_sina", ["fund_creative_SK", "fund_creative_FD"])
+    # run_module("fund_creative_sina", ["fund_creative_SK", "fund_creative_FD"])
+    # run_module("fund_top_stock", ['fund_Close_top_stocks', 'fund_ETF_top_stocks', 'fund_LOF_top_stocks', 'fund_creative_top_stocks'])
+    run_module("fund_information", ['fund_Close_FD_info', 'fund_ETF_FD_info', 'fund_LOF_FD_info', 'fund_creative_FD_info'])
 # if __name__ == "__main__":
 #     run_module('/home/frank/stock/stock_data.py', ['stock_data'])
 #     run_module('/home/frank/stock/fund_stock_close_ETF_LOF_sina.py', ['fund_Close_SK', 'fund_ETF_SK', 'fund_LOF_SK'])
