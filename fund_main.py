@@ -5,7 +5,6 @@ import op_database as op_db
 from time import strftime, gmtime, sleep, localtime
 import importlib
 
-
 # load data for each module
 sel_date = strftime("%Y-%m-%d", gmtime())
 
