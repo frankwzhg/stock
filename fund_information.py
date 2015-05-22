@@ -31,6 +31,7 @@ def fund_basic_information(basic_url):
             bs = BeautifulSoup(raw_data)
             cont = []
             for div in bs.findAll("div", {"class": "tableContainer"}):
+                print div
                 for span in div.findAll("span"):
                     cont.append(span.text)
             fund_basic_data_info = pd.DataFrame(np.array(cont[2:42]).reshape(20, 2))  # , columns=["item","value"])
@@ -128,9 +129,9 @@ def save_data(table_name):
 
 if __name__ == "__main__":
 
-    print fund_basic_information("http://stock.finance.sina.com.cn/fundInfo/view/FundInfo_JJGK.php?symbol=512990")
+    # print fund_basic_information("http://stock.finance.sina.com.cn/fundInfo/view/FundInfo_JJGK.php?symbol=512990")  #512990")
     # print fund_infor_data("512990")
-    # print save_data("fund_ETF_FD_info")
+    print save_data("fund_Close_FD_info")
     # for fund in ["fund_Close_FD", "fund_ETF_FD", "fund_creative_FD", "fund_LOF_FD"]:
     #     get_fund_info(fund)
     # get_fund_info("fund_LOF")

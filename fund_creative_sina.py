@@ -72,15 +72,16 @@ def save_data(table_name):
             fund_data_stock = get_creative_fund_stock(code)
             fund_stock_list.append(fund_data_stock)
         fund_stock_df = pd.DataFrame(fund_stock_list)
-        fund_stock_df = fund_stock_df[range(0, 9)+range(31, 33)]
-        fund_stock_df.columns = ["code", "Name", "TOprice", "YCprice", "Cprice", "THprice", "TLprice", "DealData", "DealAmout", "get_date", "Time"]
+        fund_stock_df = fund_stock_df[range(0, 9)] #+range(31, 33)]
+        fund_stock_df.columns = ["code", "Name", "TOprice", "YCprice", "Cprice", "THprice", "TLprice", "DealData", "DealAmout"]#, "get_date", "Time"]
+        fund_stock_df["get_date"] = get_date
         try:
             op_db.save(fund_stock_df, "fund_creative_SK") # SK is stock
         except:
             fund_stock_df.to_csv("/home/frank/stock/data/{0}_{1}.csv".format(table_name, get_date))
 
 if __name__ == "__main__":
-    save_data("fund_creative_SK")
+    save_data("fund_creative_FD")
 
     # print fund_list
     # fund_data_list_code = []
