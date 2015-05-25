@@ -27,7 +27,7 @@ def run_module(module, table_name_list):
 
 if __name__ == "__main__":
 
-    close_date = ('Sunday', '2015-06-22', '2015-10-01', '2015-10-02', '2015-10-05', '2015-10-06', '2015-10-07')
+    close_date = ('2015-06-22', '2015-10-01', '2015-10-02', '2015-10-05', '2015-10-06', '2015-10-07')
     current_date = strftime("%A", localtime())
     today_date = strftime('%Y-%m-%d', gmtime())
     if any(today_date in code for code in close_date):

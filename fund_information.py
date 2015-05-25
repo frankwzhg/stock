@@ -24,10 +24,12 @@ table named fund_information
 sel_date = strftime("%Y-%m-%d", gmtime())
 
 def fund_basic_information(basic_url):
+    # print basic_url
     fund_basic_data_info = pd.DataFrame()
     try:
         raw_data = urllib2.urlopen(basic_url).read()
-        bs = BeautifulSoup(raw_data, 'lxml')
+        bs = BeautifulSoup(raw_data, 'html5lib')
+        # print "bs", bs
         cont = []
         for div in bs.findAll("div", {"class": "tableContainer"}):
             for span in div.findAll("span"):
@@ -42,22 +44,23 @@ def fund_basic_information(basic_url):
 # get fund management information
 
 def fund_management_information(mg_url):
-    loop_variable = True
-    while(loop_variable):
-        try:
-            raw_data = urllib2.urlopen(mg_url).read()
-            # print "raw_data", raw_data
-            bs = BeautifulSoup(raw_data)
-            cont = []
-            for table in bs.findAll("table", {"class": "tc ntb"}):
-                for td in table.findAll('td'):
-                    cont.append(td.text)
-            fund_management_information_local = pd.DataFrame(np.reshape(cont[:6], (2, 3)))
-            fund_management_information_local = fund_management_information_local.T
-            loop_variable = False
-        except:
-            sleep(60)
-            loop_variable = True
+    # loop_variable = True
+    # while(loop_variable):
+    #     try:
+    raw_data = urllib2.urlopen(mg_url).read()
+    bs = BeautifulSoup(raw_data, 'html5lib')
+    # print bs
+    cont = []
+    for table in bs.findAll("table", {"class": "tc ntb"}):
+        for td in table.findAll('td'):
+            cont.append(td.text)
+    # print cont
+    fund_management_information_local = pd.DataFrame(np.reshape(cont[:6], (2, 3)))
+    fund_management_information_local = fund_management_information_local.T
+    loop_variable = False
+        # except:
+        #     sleep(60)
+        #     loop_variable = True
     return fund_management_information_local
 
 # merge fund basic information and management information into one dataframe fund_information
@@ -78,7 +81,9 @@ def fund_infor_data(fund_code):
     basic_url = "http://stock.finance.sina.com.cn/fundInfo/view/FundInfo_JJGK.php?symbol={0}".format(fund_code)
     mg_url = "http://stock.finance.sina.com.cn/fundInfo/view/FundInfo_JJFL.php?symbol={0}".format(fund_code)
     fund_basic_data = fund_basic_information(basic_url)
+    # print "fund_basic_data", fund_basic_data
     fund_management_data = fund_management_information(mg_url)
+    # print "management_data", fund_management_data
     if(len(fund_basic_data) == 0):
         pass
     else:
@@ -98,14 +103,16 @@ def fund_infor_data(fund_code):
 def fund_information(fund):
     fund_infor = pd.DataFrame()
     for code in fund.code:
-        # print code
+        # print "code", code
         fund_infor = fund_infor.append(fund_infor_data(str(code))[1:])
+        # print fund_infor
     return fund_infor
 
 # get fund data from database and get fund information from website
 def get_fund_info(fund_name):
 
     fund_tmp = op_db.read("select * from test.{0} where get_date ='{1}'".format(fund_name, sel_date))
+    # print 'fund_tmp', fund_tmp
     fund_info_tmp = fund_information(fund_tmp)
     # print "fund_info_tmp", fund_info_tmp
     fund_info_tmp['get_date'] = sel_date
@@ -119,6 +126,7 @@ def save_data(table_name):
     fund_info = get_fund_info(fund_name)
     # print "fund_info", fund_info
     try:
+        # print "test"
         op_db.save(fund_info, table_name)
     except:
         fund_info.to_csv("/home/frank/stock/data/{0}_{1}.csv".format(table_name, sel_date))
@@ -126,11 +134,11 @@ def save_data(table_name):
 
 if __name__ == "__main__":
 
-    # print fund_basic_information("http://stock.finance.sina.com.cn/fundInfo/view/FundInfo_JJGK.php?symbol=184728")  #512990")
+    # print fund_basic_information("http://stock.finance.sina.com.cn/fundInfo/view/FundInfo_JJGK.php?symbol=159920")  #512990")
     # print fund_infor_data("512990")
-    # print fund_management_information("http://stock.finance.sina.com.cn/fundInfo/view/FundInfo_JJFL.php?symbol=512990")
+    # print fund_management_information("http://stock.finance.sina.com.cn/fundInfo/view/FundInfo_JJFL.php?symbol=159920")
     # print fund_basic_information("http://stock.finance.sina.com.cn/fundInfo/view/FundInfo_JJFL.php?symbol=184728") #512990")
-    db = save_data("fund_LOF_FD_info")
+    db = save_data("fund_creative_FD_info")
     print db
     # for fund in ["fund_Close_FD", "fund_ETF_FD", "fund_creative_FD", "fund_LOF_FD"]:
     #     get_fund_info(fund)
