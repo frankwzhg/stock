@@ -4,10 +4,11 @@ import pandas as pd
 import op_database as op_db
 from time import strftime, gmtime
 sel_date = strftime("%Y-%m-%d", gmtime())
+# sel_date = '2015-05-25'
 # calculate creative fund rate
 def cal_rate(fund_table, sk_table):
-
     fund_table = op_db.read("select * from test.{0} where get_date = '{1}'".format(fund_table, sel_date))
+    print fund_table
     sk_table = op_db.read("select * from test.{0} where get_date = '{1}'".format(sk_table, sel_date))
     sk_table.rename(columns={'Cprice':'buy'}, inplace=True)
     fund_table = fund_table[fund_table['code'].isin(sk_table['code'])]
@@ -26,6 +27,7 @@ def save_data(table_name):
     fund_name = table_name[:-5]
     fund_rate = cal_rate(fund_name + "_FD", fund_name + "_SK")
     try:
+        # print "test"
         op_db.save(fund_rate, table_name)
     except:
         fund_rate.to_csv("/home/frank/stock/data/{0}_{1}.csv".format(table_name, sel_date))
@@ -33,7 +35,7 @@ def save_data(table_name):
     return fund_rate
 
 if __name__ == "__main__":
-    save_data("fund_creative_rate")
+    print save_data("fund_ETF_rate")
     # print cal_rate("fund_Close_FD", "fund_Close_SK")
     # op_db.save(cal_rate("fund_creative_FD", "fund_creative_SK", "Cprice"), "fund_creative_rate")
     # op_db.save(cal_rate("fund_Close_FD", "fund_Close_SK", "buy"), "fund_Close_rate")

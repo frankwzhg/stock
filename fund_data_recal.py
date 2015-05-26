@@ -33,6 +33,7 @@ def fund_recal(fd):
     temp = cal_total_value(fd)
     temp = temp[np.isfinite(temp["F_TCVal"])]
     fund_data = op_db.read("select F_net, code from test.{0}_FD where get_date= '{1}'".format(fd, get_date))
+
     # fund_data = op_db.read("select F_net, code from test." + fd + "_FD where get_date='2015-04-07'")
     fund_data = fund_data[fund_data['F_net'] != '']
     fund_data['F_net'] = fund_data['F_net'].astype(float)
