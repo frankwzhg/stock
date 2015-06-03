@@ -7,27 +7,32 @@ from time import gmtime, strftime
 import pandas as pd
 import numpy as np
 
-get_date = strftime('%Y-%m-%d', gmtime())
+# get_date = strftime('%Y-%m-%d', gmtime())
+get_date = '2015-06-02'
 # calculate fund total vaule(基金当前总市值）, 计算方式是用基金中的top ten股票的每只股票当前市值除以基金净值比的平均值
 def cal_total_value(fund_name):
     fund = op_db.read("select * from test.{0}_top_stocks where get_date = '{1}'".format(fund_name, get_date))
     # print "select * from test.{0}_top_stocks where get_date = '{1}'".format(fund_name, get_date)
     # print "select * from test." + fund_name + "_top_stocks where get_date = " + "'" + strftime("%Y-%m-%d", gmtime()) + "'"
     # # fund = op_db.read("select * from test." + fund_name + "_top_stocks where get_date = '2015-04-07'")
-    # print fund
+    # keep_cur 代表每只基金的当天价格， keep_stock_amount代表基金当前持有该股票的数量
     fund["keep_cur"] = fund.keep_cur.map(lambda x: x.replace(',', ''))
     fund["keep_stock_amount"] = fund.keep_stock_amount.map(lambda x: x.replace(',', ''))
     fund[['keep_cur', 'percent_net', 'keep_stock_amount']] = fund[['keep_cur', 'percent_net', 'keep_stock_amount']].astype(float)
     fund_code_list = fund.F_code.drop_duplicates()
     fund_cal = pd.DataFrame()
-    # print fund_cal
+    # 用每只基金的当前价格乘以基金持有该股票的总数量，再除以
     for code in fund_code_list:
         fund_temp = fund[fund.F_code == code].copy()
-        fund_temp["F_TCVal"] = sum(fund_temp.keep_cur/(fund_temp.percent_net/100))/len(fund_temp)/100000000
+        fund_temp["F_TCVal"] = sum(fund_temp.keep_cur*fund_temp.keep_stock_amount/(fund_temp.percent_net/100))/len(fund_temp)/100000000
         # print fund_cal
         fund_cal = fund_cal.append(fund_temp)
     fund_cal = fund_cal.rename(columns = {"F_code":"code"})
     return fund_cal
+# calculate fund total value at current time. fund total amount multiple fund_net at current time
+# def cal_today_total_value(fund_name):
+#     fund_data = op_db.read("select F_net, F_Tamount from %s where ")
+
 
 def fund_recal(fd):
     temp = cal_total_value(fd)
@@ -50,7 +55,7 @@ def fund_recal(fd):
     # print stock_data[np.isnan(stock_data.buy)]
     fund_cal = pd.merge(fund_cal, stock_data, on="stock_code", how="left")
 
-    fund_cal["percent_net_now"] = fund_cal.keep_stock_amount * fund_cal.buy/fund_cal.F_TCVal/1000000
+    fund_cal["percent_net_now"] = fund_cal.keep_stock_amount * fund_cal.buy/fund_cal.F_TCVal/100
     per_net_temp = fund_cal.groupby(['code']).percent_net.sum()
     per_net_now_temp = fund_cal.groupby(['code']).percent_net_now.sum()
     per_net_temp = pd.DataFrame(per_net_temp)
@@ -71,6 +76,7 @@ def save_data(table_name):
     fund_cal = fund_recal(fd)
 
     try:
+        # print fund_cal[['code', 'stock_code', 'percent_net', 'percent_net_now', 'get_date']]
         op_db.save(fund_cal, table_name)
     except:
         fund_cal.to_csv("/home/frank/stock/data/{0}_{1}.csv".format(table_name, get_date))

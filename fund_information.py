@@ -21,8 +21,8 @@ table named fund_information
 """
 
 # get fund basic information
-sel_date = strftime("%Y-%m-%d", gmtime())
-
+# sel_date = strftime("%Y-%m-%d", gmtime())
+sel_date = '2015-05-29'
 def fund_basic_information(basic_url):
     # print basic_url
     fund_basic_data_info = pd.DataFrame()
@@ -81,7 +81,7 @@ def fund_infor_data(fund_code):
     basic_url = "http://stock.finance.sina.com.cn/fundInfo/view/FundInfo_JJGK.php?symbol={0}".format(fund_code)
     mg_url = "http://stock.finance.sina.com.cn/fundInfo/view/FundInfo_JJFL.php?symbol={0}".format(fund_code)
     fund_basic_data = fund_basic_information(basic_url)
-    # print "fund_basic_data", fund_basic_data
+    print "fund_basic_data", fund_basic_data
     fund_management_data = fund_management_information(mg_url)
     # print "management_data", fund_management_data
     if(len(fund_basic_data) == 0):
@@ -126,19 +126,18 @@ def save_data(table_name):
     fund_info = get_fund_info(fund_name)
     # print "fund_info", fund_info
     try:
-        # print "test"
-        op_db.save(fund_info, table_name)
+        print "test"
+        # op_db.save(fund_info, table_name)
     except:
         fund_info.to_csv("/home/frank/stock/data/{0}_{1}.csv".format(table_name, sel_date))
     return fund_info
 
 if __name__ == "__main__":
-
     # print fund_basic_information("http://stock.finance.sina.com.cn/fundInfo/view/FundInfo_JJGK.php?symbol=159920")  #512990")
     # print fund_infor_data("512990")
     # print fund_management_information("http://stock.finance.sina.com.cn/fundInfo/view/FundInfo_JJFL.php?symbol=159920")
     # print fund_basic_information("http://stock.finance.sina.com.cn/fundInfo/view/FundInfo_JJFL.php?symbol=184728") #512990")
-    db = save_data("fund_creative_FD_info")
+    db = save_data("fund_Close_FD_info")
     print db
     # for fund in ["fund_Close_FD", "fund_ETF_FD", "fund_creative_FD", "fund_LOF_FD"]:
     #     get_fund_info(fund)
