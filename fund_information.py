@@ -126,8 +126,8 @@ def save_data(table_name):
     fund_info = get_fund_info(fund_name)
     # print "fund_info", fund_info
     try:
-        print "test"
-        # op_db.save(fund_info, table_name)
+        # print "test"
+        op_db.save(fund_info, table_name)
     except:
         fund_info.to_csv("/home/frank/stock/data/{0}_{1}.csv".format(table_name, sel_date))
     return fund_info
